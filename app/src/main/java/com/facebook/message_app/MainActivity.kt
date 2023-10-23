@@ -1,7 +1,6 @@
 package com.facebook.message_app
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -12,10 +11,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 
@@ -24,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textView1: TextView
     private lateinit var textView2: TextView
     private lateinit var button: Button
+    private var lastSender: String? = null
+    private var isFirstMessage = true
 //Making a static block as we made in java..
     companion object {
         private const val REQUEST_SMS_PERMISSION = 123
@@ -39,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_SMS), REQUEST_SMS_PERMISSION)
         } else {
+            // Clear the text views before reading SMS
+            textView1.text = ""
+            textView2.text = ""
             readSMS()
         }
         // Enable the button if both textViews are not empty
@@ -47,9 +49,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        button.setOnClickListener {
-            addItemToSheet()
-        }
     }
 
 
@@ -82,9 +81,19 @@ class MainActivity : AppCompatActivity() {
                 val sender = it.getString(senderIndex)
                 val body = it.getString(bodyIndex)
 
-                // Append sender and body to respective TextViews
-                textView1.append("Sender: $sender\n")
-                textView2.append("$body\n")
+                if (sender == lastSender) {
+                    //Do nothing..
+                } else if(!isFirstMessage) {
+                    //Do nothing..
+                  }
+                else{
+                    // If sender is different, clear textView1 and set new sender
+                    textView1.text = "Sender: $sender\n"
+                    textView2.text = "$body\n"
+                    lastSender = sender
+                    isFirstMessage = false
+                    addItemToSheet()
+                }
             }
         }
     }
