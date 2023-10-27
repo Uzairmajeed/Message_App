@@ -24,13 +24,4 @@
         android:textSize="18sp"
         android:layout_marginBottom="8dp"/>
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save To Server"
-        android:textSize="18sp"
-        android:layout_gravity="center"
-        android:enabled="false"
-        />
 </LinearLayout>
